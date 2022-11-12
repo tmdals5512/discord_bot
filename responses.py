@@ -1,30 +1,27 @@
 import random
-import requests
-from bs4 import BeautifulSoup
+import discord
 
-opgg = 'https://www.op.gg/summoners/kr/'
+async def send_message(author, message, user_message):
+    try:
+        command = user_message[2:]
+        if command.lower() == 'hello':
+            await message.channel.send(f'Hello {message.author.mention}')
+        else:
+            response = get_response(author, command)
+            await message.channel.send(response)
 
-def get_response(message: str) -> str:
-    if message[0:2] == '~~':
-        message = message[2:]
-        p_message = message.lower()
+    except Exception as e:
+        print(end='')
 
-        if p_message == 'hello':
-            return 'Hey there!'
+def get_response(username:str, message: str) -> str:
+    p_message = message.lower()
 
-        if message == 'roll':
-            return str(random.randint(1, 12))
+    if message == 'roll':
+        return '주사위(1~6): ' + str(random.randint(1, 6))
+    
+    if message == '잰추':
+        return '쀽쀽!'
         
-        if message == '잰추':
-            return '쀽쀽!'
-        
-        if message.split(' ', 2)[0] == '롤전적검색' :
-            url = opgg + (message.split(' ', 2)[1])
-            #print(url)
-            res = requests.get(url).text
-            soup = BeautifulSoup(res, "html.parser")
-            tiername = soup.find(class_ = "tier")
-            print(tiername)           
-            return (tiername)
-    print("Empty returned")
-    return
+    else:
+        return 'Command Error' 
+
